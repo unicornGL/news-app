@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:news/screens/widgets/news_card.dart';
 
+import 'package:news/models/article.dart';
+import 'package:news/screens/news_detail_screen.dart';
+import 'package:news/screens/widgets/news_card.dart';
 import 'package:news/services/news_service.dart';
 
 class NewsListScreen extends StatefulWidget {
@@ -12,23 +14,21 @@ class NewsListScreen extends StatefulWidget {
 
 class _NewsListScreenState extends State<NewsListScreen> {
   final NewsService _newsService = NewsService();
-  List<Map<String, dynamic>> _articles = [];
+  List<Article> _articles = [];
   bool _isLoading = true;
 
-  bool _validateArticle(Map<String, dynamic> article) {
-    return article['title'] != null &&
-        article['description'] != null &&
-        article['urlToImage'] != null &&
-        article['content'] != null;
+  bool _validateArticle(Article article) {
+    return article.title != null &&
+        article.urlToImage != null &&
+        article.url != null &&
+        article.content != null;
   }
 
   Future<void> _loadNews() async {
     try {
       final response = await _newsService.fetchTopHeadlines();
       setState(() {
-        _articles = List<Map<String, dynamic>>.from(response['articles'])
-            .where(_validateArticle)
-            .toList();
+        _articles = response.where(_validateArticle).toList();
         _isLoading = false;
       });
     } catch (e) {
@@ -47,6 +47,16 @@ class _NewsListScreenState extends State<NewsListScreen> {
         ),
       );
     }
+  }
+
+  void _goToNewsDetail(article) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => NewsDetailScreen(
+          article: article,
+        ),
+      ),
+    );
   }
 
   @override
@@ -83,12 +93,17 @@ class _NewsListScreenState extends State<NewsListScreen> {
         itemBuilder: (ctx, index) {
           final article = _articles[index];
 
-          return Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-            ),
-            child: NewsCard(
-              article: article,
+          return GestureDetector(
+            onTap: () {
+              _goToNewsDetail(article);
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+              ),
+              child: NewsCard(
+                article: article,
+              ),
             ),
           );
         },
