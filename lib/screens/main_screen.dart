@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 
 import 'package:news/models/nav_item.dart';
-import 'package:news/screens/news_list_screen.dart';
+import 'package:news/screens/to_read_screen.dart';
+import 'package:news/screens/top_news_screen.dart';
+
+enum Screens {
+  topNews,
+  search,
+  toRead,
+  favorites,
+}
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -12,10 +20,20 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedBottomNavIndex = 0;
+  Widget _currentScreen = const TopNewsScreen();
 
   void _selectScreen(screenIndex) {
     setState(() {
       _selectedBottomNavIndex = screenIndex;
+
+      switch (_selectedBottomNavIndex) {
+        case 0:
+          _currentScreen = const TopNewsScreen();
+          break;
+        case 2:
+          _currentScreen = const ToReadScreen();
+        default:
+      }
     });
   }
 
@@ -27,7 +45,7 @@ class _MainScreenState extends State<MainScreen> {
           NavItem.items[_selectedBottomNavIndex].title,
         ),
       ),
-      body: const NewsListScreen(),
+      body: _currentScreen,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedBottomNavIndex,
         type: BottomNavigationBarType.fixed,

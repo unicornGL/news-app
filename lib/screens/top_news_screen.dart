@@ -5,14 +5,14 @@ import 'package:news/screens/news_detail_screen.dart';
 import 'package:news/screens/widgets/news_card.dart';
 import 'package:news/services/news_service.dart';
 
-class NewsListScreen extends StatefulWidget {
-  const NewsListScreen({super.key});
+class TopNewsScreen extends StatefulWidget {
+  const TopNewsScreen({super.key});
 
   @override
-  State<NewsListScreen> createState() => _NewsListScreenState();
+  State<TopNewsScreen> createState() => _TopNewsScreenState();
 }
 
-class _NewsListScreenState extends State<NewsListScreen> {
+class _TopNewsScreenState extends State<TopNewsScreen> {
   final NewsService _newsService = NewsService();
   List<Article> _articles = [];
   bool _isLoading = true;
