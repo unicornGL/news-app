@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:news/models/article.dart';
-import 'package:news/screens/news_detail_screen.dart';
-import 'package:news/screens/widgets/news_card.dart';
+import 'package:news/screens/widgets/news_list.dart';
 import 'package:news/services/news_service.dart';
 
 class TopNewsScreen extends StatefulWidget {
@@ -49,16 +48,6 @@ class _TopNewsScreenState extends State<TopNewsScreen> {
     }
   }
 
-  void _goToNewsDetail(article) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (ctx) => NewsDetailScreen(
-          article: article,
-        ),
-      ),
-    );
-  }
-
   @override
   void initState() {
     super.initState();
@@ -86,27 +75,8 @@ class _TopNewsScreenState extends State<TopNewsScreen> {
 
     return RefreshIndicator(
       onRefresh: _loadNews,
-      child: ListView.separated(
-        key: const PageStorageKey('news_list'),
-        itemCount: _articles.length,
-        separatorBuilder: (context, index) => const SizedBox(height: 8),
-        itemBuilder: (ctx, index) {
-          final article = _articles[index];
-
-          return GestureDetector(
-            onTap: () {
-              _goToNewsDetail(article);
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-              ),
-              child: NewsCard(
-                article: article,
-              ),
-            ),
-          );
-        },
+      child: NewsList(
+        articles: _articles,
       ),
     );
   }
