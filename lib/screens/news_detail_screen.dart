@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:news/providers/to_read_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:news/services/to_read_service.dart';
 import 'package:news/models/article.dart';
 
-class NewsDetailScreen extends StatefulWidget {
+class NewsDetailScreen extends ConsumerStatefulWidget {
   const NewsDetailScreen({
     super.key,
     required this.article,
@@ -13,16 +17,58 @@ class NewsDetailScreen extends StatefulWidget {
   final Article article;
 
   @override
-  State<NewsDetailScreen> createState() => _NewsDetailScreenState();
+  ConsumerState<NewsDetailScreen> createState() => _NewsDetailScreenState();
 }
 
-class _NewsDetailScreenState extends State<NewsDetailScreen> {
-  bool isToRead = false; // TODO: get from Riverpod
+class _NewsDetailScreenState extends ConsumerState<NewsDetailScreen> {
+  final ToReadService _toReadService = ToReadService();
+  bool _isInToRead = false;
 
-  void _toggleToRead() {
+  @override
+  void initState() {
+    super.initState();
+    _checkIsInToRead();
+  }
+
+  Future<void> _checkIsInToRead() async {
+    final isInToRead = await _toReadService.checkIsInToRead(widget.article.url);
     setState(() {
-      isToRead = !isToRead;
+      _isInToRead = isInToRead;
     });
+  }
+
+  Future<void> _toggleToRead() async {
+    if (_isInToRead) {
+      await _toReadService.removeArticle(widget.article.url);
+
+      ref.read(toReadRefreshProvider.notifier).state = true;
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Remove from to-read.',
+          ),
+        ),
+      );
+      setState(() {
+        _isInToRead = false;
+      });
+    } else {
+      await _toReadService.saveArticle(widget.article);
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Add to to-read.',
+          ),
+        ),
+      );
+      setState(() {
+        _isInToRead = true;
+      });
+    }
   }
 
   String _formatDate(String dateString) {
@@ -78,7 +124,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
           IconButton(
             onPressed: _toggleToRead,
             icon: Icon(
-              isToRead ? Icons.hourglass_full : Icons.hourglass_empty,
+              _isInToRead ? Icons.hourglass_full : Icons.hourglass_empty,
             ),
           )
         ],
