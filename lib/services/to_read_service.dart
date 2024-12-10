@@ -18,20 +18,8 @@ class ToReadService {
 
     currentToReads.add(article);
 
-    final articleJsonList = currentToReads
-        .map((article) => {
-              'source': article.source != null
-                  ? {'id': article.source?.id, 'name': article.source?.name}
-                  : null,
-              'author': article.author,
-              'title': article.title,
-              'description': article.description,
-              'url': article.url,
-              'urlToImage': article.urlToImage,
-              'publishedAt': article.publishedAt,
-              'content': article.content,
-            })
-        .toList();
+    final articleJsonList =
+        currentToReads.map((article) => article.toJson()).toList();
 
     await prefs.setString(_storageKey, json.encode(articleJsonList));
   }
@@ -44,21 +32,8 @@ class ToReadService {
 
     currentToReads.removeWhere((currentToRead) => currentToRead.url == url);
 
-// TODO:extract && hourglass icon didnt change
-    final articleJsonList = currentToReads
-        .map((article) => {
-              'source': article.source != null
-                  ? {'id': article.source?.id, 'name': article.source?.name}
-                  : null,
-              'author': article.author,
-              'title': article.title,
-              'description': article.description,
-              'url': article.url,
-              'urlToImage': article.urlToImage,
-              'publishedAt': article.publishedAt,
-              'content': article.content,
-            })
-        .toList();
+    final articleJsonList =
+        currentToReads.map((article) => article.toJson()).toList();
 
     await prefs.setString(_storageKey, json.encode(articleJsonList));
   }

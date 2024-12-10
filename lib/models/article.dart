@@ -37,6 +37,24 @@ class Article {
       content: json['content'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'source': source != null
+          ? {
+              'id': source?.id,
+              'name': source?.name,
+            }
+          : null,
+      'author': author,
+      'title': title,
+      'description': description,
+      'url': url,
+      'urlToImage': urlToImage,
+      'publishedAt': publishedAt,
+      'content': content,
+    };
+  }
 }
 
 typedef Source = ({String? id, String? name});
