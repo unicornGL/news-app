@@ -29,4 +29,25 @@ class NewsService {
       throw Exception('Failed to connect to the server: $e');
     }
   }
+
+  Future<List<Article>> searchNews(query) async {
+    try {
+      final res = await http.get(
+        Uri.parse('$baseUrl/everything?q=$query&apiKey=$apiKey'),
+      );
+
+      if (res.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(res.body);
+        final List<dynamic> articlesJson = data['articles'];
+
+        return articlesJson
+            .map((articleJson) => Article.fromJson(articleJson))
+            .toList();
+      } else {
+        throw Exception('Failed to load news: ${res.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to connect to the server: $e');
+    }
+  }
 }
