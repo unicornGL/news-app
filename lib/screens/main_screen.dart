@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:news/models/nav_item.dart';
+import 'package:news/screens/search_screen.dart';
 import 'package:news/screens/to_read_screen.dart';
 import 'package:news/screens/top_news_screen.dart';
 
@@ -29,6 +30,9 @@ class _MainScreenState extends State<MainScreen> {
       switch (_selectedBottomNavIndex) {
         case 0:
           _currentScreen = const TopNewsScreen();
+          break;
+        case 1:
+          _currentScreen = const SearchScreen();
           break;
         case 2:
           _currentScreen = const ToReadScreen();
