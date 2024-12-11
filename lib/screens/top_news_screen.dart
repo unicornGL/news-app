@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:news/models/article.dart';
 import 'package:news/screens/widgets/news_list.dart';
 import 'package:news/services/news_service.dart';
+import 'package:news/utils/article_utils.dart';
 
 class TopNewsScreen extends StatefulWidget {
   const TopNewsScreen({super.key});
@@ -16,18 +17,11 @@ class _TopNewsScreenState extends State<TopNewsScreen> {
   List<Article> _articles = [];
   bool _isLoading = true;
 
-  bool _validateArticle(Article article) {
-    return article.title != null &&
-        article.urlToImage != null &&
-        article.url != null &&
-        article.content != null;
-  }
-
   Future<void> _loadNews() async {
     try {
       final response = await _newsService.fetchTopHeadlines();
       setState(() {
-        _articles = response.where(_validateArticle).toList();
+        _articles = response.where(validateArticle).toList();
         _isLoading = false;
       });
     } catch (e) {
