@@ -8,9 +8,9 @@ class NavItem {
       label: 'Top News',
     ),
     NavItem._internal(
-      title: 'Search',
-      icon: Icons.search,
-      label: 'Search',
+      title: 'Categories',
+      icon: Icons.category,
+      label: 'Categories',
     ),
     NavItem._internal(
       title: 'To-Read',
@@ -18,9 +18,9 @@ class NavItem {
       label: 'To-Read',
     ),
     NavItem._internal(
-      title: 'Favorites',
-      icon: Icons.star,
-      label: 'Favorites',
+      title: 'Search',
+      icon: Icons.search,
+      label: 'Search',
     ),
   ];
 
