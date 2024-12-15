@@ -171,10 +171,19 @@ class _NewsDetailScreenState extends ConsumerState<NewsDetailScreen> {
                           color: Colors.grey[600],
                         ),
                         const SizedBox(width: 4),
-                        Text(
-                          widget.article.author!,
-                          style: TextStyle(
-                            color: Colors.grey[600],
+                        Flexible(
+                          child: Container(
+                            constraints: BoxConstraints(
+                              maxWidth: MediaQuery.of(context).size.width * .5,
+                            ),
+                            child: Text(
+                              widget.article.author!,
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 16),
