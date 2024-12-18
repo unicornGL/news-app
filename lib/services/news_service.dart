@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:news/models/article.dart';
+import 'package:news/providers/categories_provider.dart';
 
 class NewsService {
   static const String baseUrl = 'https://newsapi.org/v2';
@@ -31,9 +32,29 @@ class NewsService {
     }
   }
 
-  // TODO: add fetchTopHeadlinesFromCategory()
+  Future<List<Article>> fetchTopHeadlinesByCategory(Category category) async {
+    try {
+      final res = await http.get(
+        Uri.parse('$baseUrl/top-headlines?category=$category&apiKey=$apiKey'),
+      );
 
-  Future<List<Article>> searchNews(query) async {
+      if (res.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(res.body);
+        final List<dynamic> articlesJson = data['articles'];
+
+        return articlesJson
+            .map((articleJson) => Article.fromJson(articleJson))
+            .toList();
+      } else {
+        throw Exception(
+            'Failed to load top headlines by category: ${res.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to connect to the server: $e');
+    }
+  }
+
+  Future<List<Article>> searchNews(String query) async {
     try {
       final res = await http.get(
         Uri.parse('$baseUrl/everything?q=$query&apiKey=$apiKey'),
@@ -47,7 +68,7 @@ class NewsService {
             .map((articleJson) => Article.fromJson(articleJson))
             .toList();
       } else {
-        throw Exception('Failed to load news: ${res.statusCode}');
+        throw Exception('Failed to search news: ${res.statusCode}');
       }
     } catch (e) {
       throw Exception('Failed to connect to the server: $e');
