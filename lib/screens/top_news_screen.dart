@@ -19,7 +19,7 @@ class _TopNewsScreenState extends State<TopNewsScreen> {
 
   Future<void> _loadNews() async {
     try {
-      final response = await _newsService.fetchTopHeadlines();
+      final response = await _newsService.fetchTopHeadlinesByCountry('us');
       setState(() {
         _articles = response.where(validateArticle).toList();
         _isLoading = false;

@@ -9,10 +9,10 @@ class NewsService {
   // TODO: use dotenv
   static const String apiKey = '8d1cf0c03e844d159b5b9cbfcd9236b4';
 
-  Future<List<Article>> fetchTopHeadlines() async {
+  Future<List<Article>> fetchTopHeadlinesByCountry(String country) async {
     try {
       final res = await http.get(
-        Uri.parse('$baseUrl/top-headlines?country=us&apiKey=$apiKey'),
+        Uri.parse('$baseUrl/top-headlines?country=$country&apiKey=$apiKey'),
       );
 
       if (res.statusCode == 200) {
@@ -23,12 +23,15 @@ class NewsService {
             .map((articleJson) => Article.fromJson(articleJson))
             .toList();
       } else {
-        throw Exception('Failed to load news: ${res.statusCode}');
+        throw Exception(
+            'Failed to load top headlines by country: ${res.statusCode}');
       }
     } catch (e) {
       throw Exception('Failed to connect to the server: $e');
     }
   }
+
+  // TODO: add fetchTopHeadlinesFromCategory()
 
   Future<List<Article>> searchNews(query) async {
     try {
