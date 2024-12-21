@@ -52,6 +52,30 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
     }
   }
 
+  Widget get categoryContent {
+    final category = ref.read(categoriesProvider);
+
+    if (category == null) {
+      return const Center(
+        child: Text('Please select a category.'),
+      );
+    }
+
+    if (_isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (_articles.isEmpty) {
+      return const Center(
+        child: Text('There is no news right now.'),
+      );
+    }
+
+    return NewsList(articles: _articles);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -69,29 +93,10 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
     ref.listen(categoriesProvider, (_, newCategory) {
       if (newCategory != null) {
         _loadNews(newCategory);
+      } else {
+        _articles = [];
       }
     });
-
-    Widget categoryContent() {
-      if (_isLoading) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      }
-
-      if (_articles.isEmpty) {
-        return const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('There is no news right now.'),
-            ],
-          ),
-        );
-      }
-
-      return NewsList(articles: _articles);
-    }
 
     return Padding(
       padding: const EdgeInsets.all(24),
@@ -114,9 +119,11 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
 
                 return OutlinedButton(
                   onPressed: () {
-                    ref
-                        .read(categoriesProvider.notifier)
-                        .selectCategory(category);
+                    setState(() {
+                      ref
+                          .read(categoriesProvider.notifier)
+                          .selectCategory(category);
+                    });
                   },
                   style: OutlinedButton.styleFrom(
                     backgroundColor: isSelected
@@ -146,7 +153,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
             ),
           ),
           Expanded(
-            child: categoryContent(),
+            child: categoryContent,
           ),
         ],
       ),

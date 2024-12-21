@@ -45,6 +45,37 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
+  Widget get searchContent {
+    if (_isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (_error != null) {
+      return Center(
+        child: Text(
+          _error!,
+          style: const TextStyle(color: Colors.red),
+        ),
+      );
+    }
+
+    if (_searchResults.isNotEmpty) {
+      return NewsList(articles: _searchResults);
+    }
+
+    if (_searchController.text.isNotEmpty) {
+      return const Center(
+        child: Text('No news found.'),
+      );
+    }
+
+    return const Center(
+      child: Text('Enter keywords to start searching.'),
+    );
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -53,37 +84,6 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget searchContent() {
-      if (_isLoading) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      }
-
-      if (_error != null) {
-        return Center(
-          child: Text(
-            _error!,
-            style: const TextStyle(color: Colors.red),
-          ),
-        );
-      }
-
-      if (_searchResults.isNotEmpty) {
-        return NewsList(articles: _searchResults);
-      }
-
-      if (_searchController.text.isNotEmpty) {
-        return const Center(
-          child: Text('No news found.'),
-        );
-      }
-
-      return const Center(
-        child: Text('Enter keywords to start searching.'),
-      );
-    }
-
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
@@ -125,7 +125,7 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ),
           Expanded(
-            child: searchContent(),
+            child: searchContent,
           )
         ],
       ),
