@@ -3,24 +3,102 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:intl/intl.dart';
 
+import 'package:news/models/article.dart';
 import 'package:news/providers/categories_provider.dart';
+import 'package:news/screens/widgets/news_list.dart';
+import 'package:news/services/news_service.dart';
+import 'package:news/utils/article_utils.dart';
 
-class CategoriesScreen extends ConsumerWidget {
+class CategoriesScreen extends ConsumerStatefulWidget {
   const CategoriesScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final selectedCategory = ref.watch(categoriesProvider);
+  ConsumerState<CategoriesScreen> createState() => _CategoriesScreenState();
+}
 
-    void selectCategory(Category category) {
-      print(category.name);
+class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
+  final NewsService _newsService = NewsService();
+  List<Article> _articles = [];
+  bool _isLoading = false;
+
+  Future<void> _loadNews(Category category) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final response = await _newsService.fetchTopHeadlinesByCategory(category);
+      setState(() {
+        _articles = response.where(validateArticle).toList();
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Failed to load news, please try again later.'),
+          action: SnackBarAction(
+            label: 'Retry',
+            onPressed: () {
+              _loadNews(category);
+            },
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      final category = ref.read(categoriesProvider);
+      if (category != null) {
+        _loadNews(category);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ref.listen(categoriesProvider, (_, newCategory) {
+      if (newCategory != null) {
+        _loadNews(newCategory);
+      }
+    });
+
+    Widget categoryContent() {
+      if (_isLoading) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      }
+
+      if (_articles.isEmpty) {
+        return const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('There is no news right now.'),
+            ],
+          ),
+        );
+      }
+
+      return NewsList(articles: _articles);
     }
 
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Column(
         children: [
-          Expanded(
+          SizedBox(
+            height: 240,
             child: GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -67,22 +145,8 @@ class CategoriesScreen extends ConsumerWidget {
               },
             ),
           ),
-          FilledButton(
-            onPressed: selectedCategory == null
-                ? null
-                : () {
-                    selectCategory(selectedCategory);
-                  },
-            style: FilledButton.styleFrom(
-              minimumSize: const Size.fromHeight(50),
-            ),
-            child: const Text(
-              'Confirm',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+          Expanded(
+            child: categoryContent(),
           ),
         ],
       ),

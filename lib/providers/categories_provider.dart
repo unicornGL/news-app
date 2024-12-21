@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 enum Category {
   business,
   entertainment,
-  general,
   health,
   science,
   sports,

@@ -35,7 +35,8 @@ class NewsService {
   Future<List<Article>> fetchTopHeadlinesByCategory(Category category) async {
     try {
       final res = await http.get(
-        Uri.parse('$baseUrl/top-headlines?category=$category&apiKey=$apiKey'),
+        Uri.parse(
+            '$baseUrl/top-headlines?category=${category.name}&apiKey=$apiKey'),
       );
 
       if (res.statusCode == 200) {
