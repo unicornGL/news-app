@@ -58,12 +58,7 @@ class _TopNewsScreenState extends State<TopNewsScreen> {
 
     if (_articles.isEmpty) {
       return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('There is no news right now.'),
-          ],
-        ),
+        child: Text('There is no news right now.'),
       );
     }
 
