@@ -58,7 +58,8 @@ class NewsService {
   Future<List<Article>> searchNews(String query) async {
     try {
       final res = await http.get(
-        Uri.parse('$baseUrl/everything?q=$query&apiKey=$apiKey'),
+        Uri.parse(
+            '$baseUrl/everything?q=$query&sortBy=relevancy&apiKey=$apiKey'),
       );
 
       if (res.statusCode == 200) {
