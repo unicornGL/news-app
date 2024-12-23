@@ -13,9 +13,9 @@ class NavItem {
       label: 'Categories',
     ),
     NavItem._internal(
-      title: 'To-Read',
+      title: 'Read-Later',
       icon: Icons.hourglass_bottom,
-      label: 'To-Read',
+      label: 'Read-Later',
     ),
     NavItem._internal(
       title: 'Search',

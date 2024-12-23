@@ -21,7 +21,7 @@ The application offers diverse news categories, including:
 
 Users can select specific categories based on their interests for quick access to relevant news content.
 
-### Read Later Function
+### Read-Later
 
 - Save interesting articles to a reading list
 - Save or remove articles using the hourglass icon in the top right corner of the article detail page
