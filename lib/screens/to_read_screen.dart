@@ -51,7 +51,7 @@ class _ToReadScreenState extends ConsumerState<ToReadScreen> {
 
     if (_articles.isEmpty) {
       return const Center(
-        child: Text('Add some news in to-read.'),
+        child: Text('Add some news to read later.'),
       );
     }
 

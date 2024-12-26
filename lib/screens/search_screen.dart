@@ -72,7 +72,7 @@ class _SearchScreenState extends State<SearchScreen> {
     }
 
     return const Center(
-      child: Text('Enter keywords to start searching.'),
+      child: Text('Enter keywords to search related news.'),
     );
   }
 
